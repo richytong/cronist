@@ -1,6 +1,6 @@
 {
   "name": "cronist",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Inline documentation parser",
   "author": "Richard Tong",
   "license": "MIT",
