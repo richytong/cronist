@@ -1,7 +1,7 @@
 {
   "name": "cronist",
   "version": "0.0.1",
-  "description": "Markdown-esque documentation",
+  "description": "Inline documentation parser",
   "author": "Richard Tong",
   "license": "MIT",
   "main": "index.js",
@@ -11,6 +11,7 @@
   },
   "homepage": "https://github.com/richytong/cronist",
   "keywords": [
+    "inline",
     "documentation",
     "parser",
     "docs"
