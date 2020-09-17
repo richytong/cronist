@@ -1,0 +1,18 @@
+{
+  "name": "cronist",
+  "version": "0.0.1",
+  "description": "Markdown-esque documentation",
+  "author": "Richard Tong",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "github:richytong/cronist"
+  },
+  "homepage": "https://github.com/richytong/cronist",
+  "keywords": [
+    "documentation",
+    "parser",
+    "docs"
+  ]
+}
