@@ -15,5 +15,8 @@
     "documentation",
     "parser",
     "docs"
-  ]
+  ],
+  "dependencies": {
+    "rubico": "latest"
+  }
 }
