@@ -11,7 +11,7 @@ describe('cronist', () => {
       assert.equal(typeof object.name, 'string')
       assert.equal(typeof object.synopsis, 'string')
       assert.equal(typeof object.description, 'string')
-      assert.equal(typeof object.mdast, 'object')
+      assert.equal(typeof object.description_mdast, 'object')
     }
   })
 })

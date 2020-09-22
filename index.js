@@ -101,7 +101,7 @@ const cronist = pipe([
       map(parsedCommentToDocSource),
       filter(not(docSourceIsExclusion)),
       map(assign({
-        mdast: pipe([
+        description_mdast: pipe([
           get('description'),
           parseMarkdown,
         ]),
