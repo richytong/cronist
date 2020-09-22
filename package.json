@@ -1,6 +1,6 @@
 {
   "name": "cronist",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Turn comments into JSON",
   "author": "Richard Tong",
   "license": "MIT",
