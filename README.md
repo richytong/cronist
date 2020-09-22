@@ -35,7 +35,7 @@ into these
     "name": "tap",
     "synopsis": "tap(\n  tapper value=>Promise|any,\n)(value any) -> value\n",
     "description": "Call a function with a value..."
-    "mdast": {
+    "description_mdast": {
       "type": "root",
       "children": [{/* ... */}, {/* ... */}],
       "position": {
