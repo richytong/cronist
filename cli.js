@@ -79,14 +79,11 @@ const cli = pipe([
     path => path.endsWith('.js'), Array.of,
     walkPathForJSFilePaths])),
   flatMap(pipe([
-    fs.promises.readFile,
-    toString,
-    cronist,
-  ])),
-  // jsonPrettify,
+    fs.promises.readFile, toString, cronist])),
+  jsonPrettify,
   trace,
 ])
 
 cli({
-  entrypoint: process.argv.slice(2)
+  entrypoint: process.argv.slice(2),
 })
