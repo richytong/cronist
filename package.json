@@ -5,6 +5,9 @@
   "author": "Richard Tong",
   "license": "MIT",
   "main": "index.js",
+  "bin": {
+    "cronist": "cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "github:richytong/cronist"
@@ -17,6 +20,9 @@
     "docs"
   ],
   "dependencies": {
-    "rubico": "latest"
+    "comment-parser": "^0.7.6",
+    "remark-parse": "^8.0.3",
+    "rubico": "latest",
+    "unified": "^9.2.0"
   }
 }
