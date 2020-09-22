@@ -1,7 +1,7 @@
 {
   "name": "cronist",
   "version": "0.0.3",
-  "description": "Turn comments into JSON",
+  "description": "Turn comments into JavaScript",
   "author": "Richard Tong",
   "license": "MIT",
   "main": "index.js",

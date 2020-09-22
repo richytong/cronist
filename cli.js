@@ -6,6 +6,7 @@ const rubico = require('rubico')
 const trace = require('rubico/x/trace')
 const fs = require('fs')
 const nodePath = require('path')
+const util = require('util')
 const cronist = require('.')
 
 const {
@@ -68,6 +69,9 @@ const walkPathForJSFilePaths = pipe([
   )(dirents),
 ])
 
+// value any -> string
+const inspect = value => util.inspect(value, { depth: Infinity })
+
 // { entrypoint: string|Array<string> } -> ()
 const cli = pipe([
   tap.if(any(value => value == null), argumentObject => {
@@ -80,7 +84,8 @@ const cli = pipe([
     walkPathForJSFilePaths])),
   flatMap(pipe([
     fs.promises.readFile, toString, cronist])),
-  jsonPrettify,
+  inspect,
+  documentation => `export default ${documentation}`,
   trace,
 ])
 
