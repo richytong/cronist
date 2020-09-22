@@ -1,7 +1,7 @@
 {
   "name": "cronist",
   "version": "0.0.2",
-  "description": "Inline documentation parser",
+  "description": "Turn comments into documentation",
   "author": "Richard Tong",
   "license": "MIT",
   "main": "index.js",

@@ -1,7 +1,8 @@
 # cronist
-Inline documentation parser
+Turn comments into documentation
 
-Turn comments that start with `/**` and keyed by `@property`
+### Example
+Turn these
 
 ```javascript
 /**
@@ -27,27 +28,28 @@ Turn comments that start with `/**` and keyed by `@property`
 const tap = ...
 ```
 
-into these objects
+into these
 
 ```javascript
   {
-    name: 'tap',
-    synopsis: 'tap(\n  tapper value=>Promise|any,\n)(value any) -> value\n',
-    description: 'Call a function with a value, returning the value.\n' +
-      '\n' +
-      '```javascript [playground]\n' +
-      'pipe([\n' +
-      '  tap(console.log),\n' +
-      "  value => value + 'bar'\n" +
-      '  tap(console.log),\n' +
-      "])('foo') // 'foo'\n" +
-      "          // 'foobar'\n" +
-      '```\n'
+    "name": "tap",
+    "synopsis": "tap(\n  tapper value=>Promise|any,\n)(value any) -> value\n",
+    "description": "Call a function with a value..."
+    "mdast": {
+      "type": "root",
+      "children": [{/* ... */}, {/* ... */}],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 11,
+          "column": 1,
+          "offset": 196
+        }
+      }
+    }
   },
-```
-
-into HTML
-
-```html
-todo
 ```
