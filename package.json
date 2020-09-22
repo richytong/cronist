@@ -1,7 +1,7 @@
 {
   "name": "cronist",
   "version": "0.0.2",
-  "description": "Turn comments into documentation",
+  "description": "Turn comments into JSON",
   "author": "Richard Tong",
   "license": "MIT",
   "main": "index.js",
@@ -17,7 +17,9 @@
     "inline",
     "documentation",
     "parser",
-    "docs"
+    "docs",
+    "markdown",
+    "json"
   ],
   "dependencies": {
     "comment-parser": "^0.7.6",

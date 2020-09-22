@@ -1,5 +1,5 @@
 # cronist
-Turn comments into documentation
+Turn comments into JSON
 
 ### Example
 Turn these
