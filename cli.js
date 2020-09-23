@@ -32,9 +32,6 @@ const readdirWithFileTypes = path => fs.promises.readdir(path, {
 // object => string
 const toString = value => value.toString()
 
-// object => string
-const jsonPrettify = value => JSON.stringify(value, null, 2)
-
 const IGNORE_DIRS = new Set(['.git', 'node_modules'])
 
 // fs.Dirent => boolean
@@ -69,8 +66,12 @@ const walkPathForJSFilePaths = pipe([
   )(dirents),
 ])
 
-// value any -> string
-const inspect = value => util.inspect(value, { depth: Infinity })
+// object -> code string
+const toJavaScript = pipe([
+  object => util.inspect(object, { depth: Infinity }),
+  code => code.replace(/Position /g, ''),
+  code => `export default ${code}`,
+])
 
 // { entrypoint: string|Array<string> } -> ()
 const cli = pipe([
@@ -84,8 +85,7 @@ const cli = pipe([
     walkPathForJSFilePaths])),
   flatMap(pipe([
     fs.promises.readFile, toString, cronist])),
-  inspect,
-  documentation => `export default ${documentation}`,
+  toJavaScript,
   trace,
 ])
 

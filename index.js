@@ -72,7 +72,7 @@ const excludedFunctions = new Set([])
 const docSourceIsExclusion = docSource => excludedFunctions.has(docSource.name)
 
 // code string => Array<ParsedComments>
-const parser = code => commentParser(code, { trim: false })
+const parseComments = code => commentParser(code, { trim: false })
 
 const markdownParser = unified().use(markdown)
 
@@ -94,7 +94,7 @@ const Stdout = {
 //   mdast: object,
 // }>
 const cronist = pipe([
-  parser,
+  parseComments,
   transform(
     pipe([
       filter(parsedCommentIsComplete),
