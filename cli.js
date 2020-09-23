@@ -63,7 +63,7 @@ const walkPathForJSFilePaths = pipe([
       () => [],
     ])),
     () => [],
-  )(dirents),
+  )(dirents)
 ])
 
 // object -> code string
@@ -73,10 +73,13 @@ const toJavaScript = pipe([
   code => `export default ${code}`,
 ])
 
-// { entrypoint: string|Array<string> } -> ()
+// args Array -> ()
 const cli = pipe([
-  tap.if(any(value => value == null), argumentObject => {
-    console.error('invalid arguments', argumentObject)
+  args => ({
+    entrypoint: args.filter(not(arg => arg.startsWith('-'))),
+  }),
+  tap.if(eq(0, get('entrypoint.length')), () => {
+    console.error('path arguments required')
     process.exit(1)
   }),
   get('entrypoint'),
@@ -89,6 +92,4 @@ const cli = pipe([
   trace,
 ])
 
-cli({
-  entrypoint: process.argv.slice(2),
-})
+cli(process.argv.slice(2))

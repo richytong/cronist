@@ -3,8 +3,6 @@
 const rubico = require('rubico')
 const trace = require('rubico/x/trace')
 const commentParser = require('comment-parser')
-const fs = require('fs')
-const path = require('path')
 const unified = require('unified')
 const markdown = require('remark-parse')
 
