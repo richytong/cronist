@@ -99,15 +99,15 @@ const cronist = pipe([
       map(parsedCommentToDocSource),
       filter(not(docSourceIsExclusion)),
       map(assign({
-        description_mdast: pipe([
-          get('description'),
-          parseMarkdown,
-        ]),
+        synopsis_mdast: ({ synopsis }) => parseMarkdown(synopsis),
+        description_mdast: ({ description }) => parseMarkdown(description),
       })),
     ]),
     // Stdout,
     () => [],
   )
 ])
+
+cronist.parseMarkdown = parseMarkdown
 
 module.exports = cronist
