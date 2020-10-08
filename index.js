@@ -25,12 +25,12 @@ const slice = (from, to) => value => value.slice(from, to)
 
 const join = delimiter => value => value.join(delimiter)
 
-// tagName string -> parsedComment Object -> boolean
+// tagName string => parsedComment Object => boolean
 const parsedCommentHasTag = tagName => function lookingForTag(parsedComment) {
   return parsedComment.tags.findIndex(tag => tag.tag == tagName) != -1
 }
 
-// (tagName string, defaultValue any?) -> parsedComment Object -> object
+// (tagName string, defaultValue any?) => parsedComment Object => object
 const parsedCommentGetTag = (
   tagName, defaultValue,
 ) => function gettingTag(parsedComment) {
@@ -38,35 +38,53 @@ const parsedCommentGetTag = (
   return tag === undefined ? defaultValue : tag
 }
 
-// parsedComment -> boolean
+// parsedComment => boolean
 const parsedCommentIsComplete = and([
   parsedCommentHasTag('name'),
   parsedCommentHasTag('synopsis'),
   parsedCommentHasTag('description'),
 ])
 
-// parsedComment Object -> docName string
+// parsedComment Object => docName string
 const parsedCommentGetName = pipe([parsedCommentGetTag('name'), get('name')])
 
-// tagName string -> parsedComment -> doc Object
+// (expr string|RegExp, replacement string) => value string => replaced string
+const replace = (expr, replacement) => function replacing(value) {
+  return value.replace(expr, replacement)
+}
+
+// value string => trimmed string
+const trim = value => value.trim()
+
+// tagName string => parsedComment => doc Object
 const parsedCommentToDocSourceBy = tagName => pipe([
   parsedCommentGetTag(tagName),
   get('source'),
-  split('\n'),
-  slice(1),
-  join('\n'),
+  replace(/^@[\w-]+[\n\s]+/, ''),
+  trim,
 ])
 
-// parsedComment -> docSource {}
-const parsedCommentToDocSource = fork({
-  name: parsedCommentGetName,
-  synopsis: parsedCommentToDocSourceBy('synopsis'),
-  description: parsedCommentToDocSourceBy('description'),
-})
+
+// parsedComment => docSource {}
+const parsedCommentToDocSource = pipe([
+  get('tags'),
+  reduce(
+    (docSource, tag) => {
+      const docSourceKey = tag.tag,
+        docSourceItem = tag.source.replace(/^@[\w-]+[\n\s]+/, '').trim()
+      if (docSource[docSourceKey] == null) {
+        docSource[docSourceKey] = docSourceItem
+      } else {
+        const current = docSource[docSourceKey]
+        docSource[docSourceKey] = [current, docSourceItem]
+      }
+      return docSource
+    }, () => ({})),
+])
 
 const excludedFunctions = new Set([])
 
-// docSource Object -> boolean
+// docSource Object => boolean
 const docSourceIsExclusion = docSource => excludedFunctions.has(docSource.name)
 
 // code string => Array<ParsedComments>
@@ -85,11 +103,17 @@ const Stdout = {
   },
 }
 
-// code string -> Array<{
+// code string => Array<{
 //   name: string,
 //   synopsis: string,
 //   description: string,
-//   mdast: object,
+//   ...otherStringFields,
+//   mdast: {
+//     name: Mdast,
+//     synopsis: Mdast,
+//     description: Mdast,
+//     ...otherMdastFields,
+//   },
 // }>
 const cronist = pipe([
   parseComments,
@@ -99,13 +123,10 @@ const cronist = pipe([
       map(parsedCommentToDocSource),
       filter(not(docSourceIsExclusion)),
       map(assign({
-        synopsis_mdast: ({ synopsis }) => parseMarkdown(synopsis),
-        description_mdast: ({ description }) => parseMarkdown(description),
+        mdast: map(parseMarkdown),
       })),
     ]),
-    // Stdout,
-    () => [],
-  )
+    () => []),
 ])
 
 cronist.parseMarkdown = parseMarkdown

@@ -8,6 +8,8 @@ describe('cronist', () => {
     const docObjects = cronist(comments.toString())
     assert.equal(docObjects.length, 2)
     for (const object of docObjects) {
+      assert(!object.name.includes('\n'))
+      assert(!object.name.includes('@'))
       assert.equal(typeof object.name, 'string')
       assert.equal(typeof object.synopsis, 'string')
       assert.equal(typeof object.description, 'string')
