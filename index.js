@@ -7,12 +7,14 @@ const unified = require('unified')
 const markdown = require('remark-parse')
 
 const {
-  pipe, fork, assign,
-  tap, tryCatch, switchCase,
+  pipe, tap,
+  switchCase, tryCatch,
+  fork, assign, get, pick, omit,
   map, filter, reduce, transform, flatMap,
-  any, all, and, or, not,
+  and, or, not, any, all,
   eq, gt, lt, gte, lte,
-  get, pick, omit,
+  thunkify, always,
+  curry, __,
 } = rubico
 
 const isArray = Array.isArray
@@ -37,13 +39,6 @@ const parsedCommentGetTag = (
   const tag = parsedComment.tags.find(tag => tag.tag == tagName)
   return tag === undefined ? defaultValue : tag
 }
-
-// parsedComment => boolean
-const parsedCommentIsComplete = and([
-  parsedCommentHasTag('name'),
-  parsedCommentHasTag('synopsis'),
-  parsedCommentHasTag('description'),
-])
 
 // parsedComment Object => docName string
 const parsedCommentGetName = pipe([parsedCommentGetTag('name'), get('name')])
@@ -103,31 +98,28 @@ const Stdout = {
   },
 }
 
-// code string => Array<{
-//   name: string,
-//   synopsis: string,
-//   description: string,
-//   ...otherStringFields,
-//   mdast: {
-//     name: Mdast,
-//     synopsis: Mdast,
-//     description: Mdast,
-//     ...otherMdastFields,
-//   },
-// }>
-const cronist = pipe([
-  parseComments,
-  transform(
-    pipe([
-      filter(parsedCommentIsComplete),
-      map(parsedCommentToDocSource),
-      filter(not(docSourceIsExclusion)),
-      map(assign({
-        mdast: map(parseMarkdown),
-      })),
-    ]),
-    () => []),
-])
+// code string => Array<Object<markdown string>>
+const cronist = function (
+  code, { keys, delimiter = ',' } = {},
+) {
+  const mdastHasAllRequiredFields = keys == null
+    ? always(true)
+    : and(keys.map(parsedCommentHasTag))
+  return pipe([
+    parseComments,
+    transform(
+      pipe([
+        filter(mdastHasAllRequiredFields),
+        map(parsedCommentToDocSource),
+        filter(not(docSourceIsExclusion)),
+        map(assign({
+          mdast: map(parseMarkdown),
+        })),
+      ]),
+      () => [],
+    ),
+  ])(code)
+}
 
 cronist.parseMarkdown = parseMarkdown
 
