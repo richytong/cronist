@@ -1,25 +1,36 @@
 # cronist
-Turn comments into JavaScript
+Transform comment documentation into [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
-### Example
-Turn these
+### Why?
+cronist makes it easy to quickly hook up dynamic documentation into a documentation site. It also circumvents a problem with importing data as JSON files as described by this question on [stackoverflow](https://stackoverflow.com/questions/34944099/how-to-import-a-json-file-in-ecmascript-6).
+
+Features:
+  * Mdast parsing as the `mdast` key on each documentation item
+
+Proof of concept: comments in [rubico source](https://github.com/a-synchronous/rubico) and documentation site [rubico.land](https://rubico.land/)
+
+# Usage
+Write comment documentation following a basic `@key #valid-markdown` schema.
 
 ```javascript
 /**
  * @name tap
  *
  * @synopsis
- * tap(
- *   tapper value=>Promise|any,
- * )(value any) -> value
+ * ```coffeescript [specscript]
+ * var args ...any,
+ *   tapper ...args=>Promise|any
+ *
+ * tap(tapper)(...args) -> Promise|args[0]
+ * ```
  *
  * @description
- * Call a function with a value, returning the value.
+ * Call a function with a value, returning the value. Promises created by the tapper are resolved before returning the value.
  *
  * ```javascript [playground]
  * pipe([
  *   tap(console.log),
- *   value => value + 'bar'
+ *   value => value + 'bar',
  *   tap(console.log),
  * ])('foo') // 'foo'
  *           // 'foobar'
@@ -28,68 +39,44 @@ Turn these
 const tap = ...
 ```
 
-into these
+Use cronist to parse the file containing the above comment documentation into ES modules.
 
-```javascript
+```sh
+$ cronist file-that-had-the-above-tap.js
+export default [
   {
     name: 'tap',
-    synopsis: 'tap(\n  tapper value=>Promise|any,\n)(value any) -> value\n',
-    description: 'Call a function with a value, returning the value.\n' +
+    synopsis: '```coffeescript [specscript]\n' +
+      'var args ...any,\n' +
+      '  tapper ...args=>Promise|any\n' +
+      '\n' +
+      'tap(tapper)(...args) -> Promise|args[0]\n' +
+      '```',
+    description: 'Call a function with a value, returning the value. Promises created by the tapper are resolved before returning the value.\n' +
       '\n' +
       '```javascript [playground]\n' +
       'pipe([\n' +
       '  tap(console.log),\n' +
-      "  value => value + 'bar'\n" +
+      "  value => value + 'bar',\n" +
       '  tap(console.log),\n' +
       "])('foo') // 'foo'\n" +
       "          // 'foobar'\n" +
-      '```\n',
-    description_mdast: {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            {
-              type: 'text',
-              value: 'Call a function with a value, returning the value.',
-              position: Position {
-                start: { line: 1, column: 1, offset: 0 },
-                end: { line: 1, column: 51, offset: 50 },
-                indent: []
-              }
-            }
-          ],
-          position: Position {
-            start: { line: 1, column: 1, offset: 0 },
-            end: { line: 1, column: 51, offset: 50 },
-            indent: []
-          }
-        },
-        {
-          type: 'code',
-          lang: 'javascript',
-          meta: '[playground]',
-          value: 'pipe([\n' +
-            '  tap(console.log),\n' +
-            "  value => value + 'bar'\n" +
-            '  tap(console.log),\n' +
-            "])('foo') // 'foo'\n" +
-            "          // 'foobar'",
-          position: Position {
-            start: { line: 3, column: 1, offset: 52 },
-            end: { line: 10, column: 4, offset: 195 },
-            indent: [
-              1, 1, 1, 1,
-              1, 1, 1
-            ]
-          }
-        }
-      ],
-      position: {
-        start: { line: 1, column: 1, offset: 0 },
-        end: { line: 11, column: 1, offset: 196 }
-      }
+      '```',
+    mdast: {
+      name: {/* ... */},
+      synopsis: {/* ... */},
+      description: {/* ... */}
     }
   },
+  ...
+]
 ```
+
+# Installation
+with `npm`
+```sh
+npm i cronist
+```
+
+# TODO
+ * support globbing
