@@ -1,6 +1,6 @@
 {
   "name": "cronist",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Transform comment documentation into ES modules",
   "author": "Richard Tong",
   "license": "MIT",
