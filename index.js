@@ -99,12 +99,10 @@ const Stdout = {
 }
 
 // code string => Array<Object<markdown string>>
-const cronist = function (
-  code, { keys, delimiter = ',' } = {},
-) {
-  const mdastHasAllRequiredFields = keys == null
+const cronist = function (code, requiredKeys) {
+  const mdastHasAllRequiredFields = requiredKeys == null
     ? always(true)
-    : and(keys.map(parsedCommentHasTag))
+    : and(requiredKeys.map(parsedCommentHasTag))
   return pipe([
     parseComments,
     transform(

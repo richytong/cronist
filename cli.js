@@ -3,6 +3,7 @@
 'use strict'
 
 const rubico = require('rubico')
+const rubicoX = require('rubico')
 const trace = require('rubico/x/trace')
 const fs = require('fs')
 const nodePath = require('path')
@@ -10,13 +11,19 @@ const util = require('util')
 const cronist = require('.')
 
 const {
-  pipe, fork, assign,
-  tap, tryCatch, switchCase,
+  pipe, tap,
+  switchCase, tryCatch,
+  fork, assign, get, pick, omit,
   map, filter, reduce, transform, flatMap,
-  any, all, and, or, not,
+  and, or, not, any, all,
   eq, gt, lt, gte, lte,
-  get, pick, omit,
+  thunkify, always,
+  curry, __,
 } = rubico
+
+const {
+  isEmpty,
+} = rubicoX
 
 // any => any
 const identity = value => value
@@ -73,23 +80,33 @@ const toJavaScript = pipe([
   code => `export default ${code}`,
 ])
 
-// args Array -> ()
-const cli = pipe([
-  args => ({
-    entrypoint: args.filter(not(arg => arg.startsWith('-'))),
-  }),
-  tap.if(eq(0, get('entrypoint.length')), () => {
-    console.error('path arguments required')
-    process.exit(1)
-  }),
-  get('entrypoint'),
-  flatMap(switchCase([
-    path => path.endsWith('.js'), Array.of,
-    walkPathForJSFilePaths])),
-  flatMap(pipe([
-    fs.promises.readFile, toString, cronist])),
-  toJavaScript,
-  trace,
-])
+// args Array<string> -> ()
+const cli = args => {
+  const requiredKeys = args.includes('--required-keys')
+    ? args[args.indexOf('--required-keys') + 1].split(',')
+    : null
+  return pipe([
+    args => ({
+      entrypoint: args.filter(not(arg => arg.startsWith('-'))),
+    }),
+    tap.if(eq(0, get('entrypoint.length')), () => {
+      console.error('path arguments required')
+      process.exit(1)
+    }),
+    get('entrypoint'),
+    flatMap(switchCase([
+      path => path.endsWith('.js'),
+      Array.of,
+      walkPathForJSFilePaths
+    ])),
+    flatMap(pipe([
+      fs.promises.readFile,
+      toString,
+      curry.arity(2, cronist, __, requiredKeys),
+    ])),
+    toJavaScript,
+    trace,
+  ])(args)
+}
 
 cli(process.argv.slice(2))

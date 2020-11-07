@@ -77,6 +77,3 @@ with `npm`
 ```sh
 npm i cronist
 ```
-
-# TODO
- * support globbing
