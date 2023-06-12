@@ -7,11 +7,12 @@ describe('cronist', () => {
     const comments = await fs.promises.readFile('./comments.js')
     const docObjects = cronist(comments.toString())
     assert.equal(docObjects.length, 3)
-    for (const object of docObjects) {
-      assert(!object.name.includes('\n'))
-      assert(!object.name.includes('@'))
-      assert.equal(typeof object.name, 'string')
-      assert.equal(typeof object.mdast.name, 'object')
+    assert(docObjects[0].mdast.synopsis.children[0].type == 'yaml')
+    for (const docObject of docObjects) {
+      assert(!docObject.name.includes('\n'))
+      assert(!docObject.name.includes('@'))
+      assert.equal(typeof docObject.name, 'string')
+      assert.equal(typeof docObject.mdast.name, 'object')
     }
   })
 
@@ -19,16 +20,16 @@ describe('cronist', () => {
     const comments = await fs.promises.readFile('./comments.js')
     const docObjects = cronist(comments.toString(), ['name', 'synopsis', 'description'])
     assert.equal(docObjects.length, 2)
-    for (const object of docObjects) {
-      assert(!object.name.includes('\n'))
-      assert(!object.name.includes('@'))
-      assert.equal(typeof object.name, 'string')
-      assert.equal(typeof object.synopsis, 'string')
-      assert.equal(typeof object.description, 'string')
-      assert.equal(typeof object.mdast, 'object')
-      assert.equal(typeof object.mdast.name, 'object')
-      assert.equal(typeof object.mdast.synopsis, 'object')
-      assert.equal(typeof object.mdast.description, 'object')
+    for (const docObject of docObjects) {
+      assert(!docObject.name.includes('\n'))
+      assert(!docObject.name.includes('@'))
+      assert.equal(typeof docObject.name, 'string')
+      assert.equal(typeof docObject.synopsis, 'string')
+      assert.equal(typeof docObject.description, 'string')
+      assert.equal(typeof docObject.mdast, 'object')
+      assert.equal(typeof docObject.mdast.name, 'object')
+      assert.equal(typeof docObject.mdast.synopsis, 'object')
+      assert.equal(typeof docObject.mdast.description, 'object')
     }
   })
 })
