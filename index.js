@@ -1,21 +1,12 @@
 'use strict'
 
-const rubico = require('rubico')
-const trace = require('rubico/x/trace')
+require('rubico/global')
+const Transducer = require('rubico/Transducer')
 const commentParser = require('comment-parser')
 const unified = require('unified')
 const markdown = require('remark-parse')
-
-const {
-  pipe, tap,
-  switchCase, tryCatch,
-  fork, assign, get, pick, omit,
-  map, filter, reduce, transform, flatMap,
-  and, or, not, any, all,
-  eq, gt, lt, gte, lte,
-  thunkify, always,
-  curry, __,
-} = rubico
+const frontmatter = require('remark-frontmatter')
+const parseFrontmatter = require('remark-parse-yaml')
 
 const isArray = Array.isArray
 
@@ -85,7 +76,10 @@ const docSourceIsExclusion = docSource => excludedFunctions.has(docSource.name)
 // code string => Array<ParsedComments>
 const parseComments = code => commentParser(code, { trim: false })
 
-const markdownParser = unified().use(markdown)
+const markdownParser = unified()
+  .use(markdown)
+  .use(frontmatter)
+  .use(parseFrontmatter)
 
 // code string => something
 const parseMarkdown = code => markdownParser.parse(code)
@@ -103,20 +97,18 @@ const cronist = function (code, requiredKeys) {
   const mdastHasAllRequiredFields = requiredKeys == null
     ? always(true)
     : and(requiredKeys.map(parsedCommentHasTag))
-  return pipe([
+
+  return pipe(code, [
     parseComments,
-    transform(
-      pipe([
-        filter(mdastHasAllRequiredFields),
-        map(parsedCommentToDocSource),
-        filter(not(docSourceIsExclusion)),
-        map(assign({
-          mdast: map(parseMarkdown),
-        })),
-      ]),
-      () => [],
-    ),
-  ])(code)
+    transform(compose([
+      Transducer.filter(mdastHasAllRequiredFields),
+      Transducer.map(parsedCommentToDocSource),
+      Transducer.filter(not(docSourceIsExclusion)),
+      Transducer.map(assign({
+        mdast: map(parseMarkdown),
+      })),
+    ]), []),
+  ])
 }
 
 cronist.parseMarkdown = parseMarkdown

@@ -2,6 +2,13 @@
  * @name pipe
  *
  * @synopsis
+ * ---
+ * title: pipe docs
+ * author: Richard Tong
+ * date: 2020-10-02
+ * ---
+ *
+ * ```coffeescript [specscript]
  * pipe(
  *   funcs Array<any=>Promise|any>,
  * )(value any) -> Promise|any
@@ -11,6 +18,7 @@
  * pipe(
  *   Array<Reducer=>Reducer>,
  * )(Reducer) -> composed Reducer
+ * ```
  *
  * @description
  * Chain together an array of functions as a pipe, each function passing its return value as the first argument to the next function until all functions have executed. The final result is the return of the last function execution.
