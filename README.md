@@ -1,7 +1,7 @@
 # cronist
 ![cronist](https://rubico.land/assets/cronist-logo-3.jpg)
 
-Transform comment documentation into HTML files or [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
+Transform comment documentation into HTML or [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
 # Usage
 Write comment documentation following a basic `@key #valid-markdown` schema.
