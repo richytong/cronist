@@ -1,4 +1,6 @@
 # cronist
+![cronist](https://rubico.land/assets/cronist-logo.jpg)
+
 Transform comment documentation into [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
 ### Why?
