@@ -3,14 +3,6 @@
 
 Transform comment documentation into HTML files or [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
-### Why?
-cronist makes it easy to quickly hook up dynamic documentation into a documentation site. It also circumvents a problem with importing data as JSON files as described by this question on [stackoverflow](https://stackoverflow.com/questions/34944099/how-to-import-a-json-file-in-ecmascript-6).
-
-Features:
-  * Mdast parsing as the `mdast` key on each documentation item
-
-Proof of concept: comments in [rubico source](https://github.com/a-synchronous/rubico) and documentation site [rubico.land](https://rubico.land/)
-
 # Usage
 Write comment documentation following a basic `@key #valid-markdown` schema.
 
