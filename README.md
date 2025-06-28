@@ -1,6 +1,6 @@
-# cronist
 ![cronist](https://rubico.land/assets/cronist-logo-3.jpg)
 
+# cronist
 Transform comment documentation into HTML files or [ES modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules).
 
 ### Why?
