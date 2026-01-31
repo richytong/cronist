@@ -26,7 +26,7 @@
     "remark-frontmatter": "^3.0.0",
     "remark-parse": "^9.0.0",
     "remark-parse-yaml": "^0.0.3",
-    "rubico": "latest",
+    "rubico": "^2.7.8",
     "thunk-test": "^0.7.2",
     "unified": "^9.2.0"
   }
