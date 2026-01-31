@@ -75,7 +75,11 @@ const walkPathForJSFilePaths = pipe([
 
 // object -> code string
 const toJavaScript = pipe([
-  object => util.inspect(object, { depth: Infinity, maxArrayLength: null }),
+  object => util.inspect(object, {
+    depth: Infinity,
+    maxArrayLength: null,
+    maxStringLength: Infinity,
+  }),
   code => code.replace(/Position /g, ''),
   code => `export default ${code}`,
 ])
