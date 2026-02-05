@@ -58,11 +58,11 @@ const parsedCommentToDocSource = pipe([
     (docSource, tag) => {
       const docSourceKey = tag.tag,
         docSourceItem = tag.source.replace(/^@[\w-]+[\n\s]+/, '').trim()
-      if (docSource[docSourceKey] == null) {
-        docSource[docSourceKey] = docSourceItem
-      } else {
+      if (docSource.hasOwnProperty(docSourceKey)) {
         const current = docSource[docSourceKey]
         docSource[docSourceKey] = [current, docSourceItem]
+      } else {
+        docSource[docSourceKey] = docSourceItem
       }
       return docSource
     }, () => ({})),
