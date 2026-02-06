@@ -54,18 +54,17 @@ const parsedCommentToDocSourceBy = tagName => pipe([
 // parsedComment => docSource {}
 const parsedCommentToDocSource = pipe([
   get('tags'),
-  reduce(
-    (docSource, tag) => {
-      const docSourceKey = tag.tag,
-        docSourceItem = tag.source.replace(/^@[\w-]+[\n\s]+/, '').trim()
-      if (docSource.hasOwnProperty(docSourceKey)) {
-        const current = docSource[docSourceKey]
-        docSource[docSourceKey] = [current, docSourceItem]
-      } else {
-        docSource[docSourceKey] = docSourceItem
-      }
-      return docSource
-    }, () => ({})),
+  reduce((docSource, tag) => {
+    const docSourceKey = tag.tag,
+      docSourceItem = tag.source.replace(/^@[\w-]+[\n\s]+/, '').trim()
+    if (docSource.hasOwnProperty(docSourceKey)) {
+      const current = docSource[docSourceKey]
+      docSource[docSourceKey] = [current, docSourceItem]
+    } else {
+      docSource[docSourceKey] = docSourceItem
+    }
+    return docSource
+  }, () => ({})),
 ])
 
 const excludedFunctions = new Set([])
@@ -82,7 +81,9 @@ const markdownParser = unified()
   .use(parseFrontmatter)
 
 // code string => something
-const parseMarkdown = code => markdownParser.parse(code)
+const parseMarkdown = code => {
+  return markdownParser.parse(code)
+}
 
 // stdout as a Semigroup
 const Stdout = {
@@ -104,8 +105,17 @@ const cronist = function (code, requiredKeys) {
       Transducer.filter(mdastHasAllRequiredFields),
       Transducer.map(parsedCommentToDocSource),
       Transducer.filter(not(docSourceIsExclusion)),
+
       Transducer.map(assign({
-        mdast: map(parseMarkdown),
+        mdast(docSource) {
+          const result = {}
+          for (const key in docSource) {
+            if (docSource.hasOwnProperty(key)) {
+              result[key] = parseMarkdown(docSource[key])
+            }
+          }
+          return result
+        },
       })),
     ]), []),
   ])
